@@ -17,6 +17,7 @@ from Cropping_teeth_function import *
 # img_path = 'D:/Lab/PBL/tooth_detection/unet/test/seg_image/*.PNG'
 img_path = './choose_crop_img/lower/*.PNG'
 o_image_folder_path = '../root_and_image_data/1_o_image/'
+# o_image_folder_path = '../../data/root_and_image_data/1_o_image/'
 img_path_list = glob.glob(img_path)
 assert len(img_path_list) > 0
 
@@ -231,13 +232,13 @@ def crop_teeth_byline(path, o_image, final_mul,final_mul_only_one_line, upper_te
             overlap_ro_tooth, overlap_auto_crop = crop_image(o_image_t, box_findoverlap*4)
         except Exception as e: 
             print(e)
-            print(path.split('\\')[-1][:-4])
+            print(os.path.basename(path)[:-4])
             # print('box =',box*4)
             continue
         
         if max(ro_tooth.shape)/min(ro_tooth.shape)>5:
             
-            cv2.imwrite('skip/'+path.split('\\')[-1][:-4]+'_'+str(i)+'.png', ro_tooth)
+            cv2.imwrite('skip/'+os.path.basename(path)[:-4]+'_'+str(i)+'.png', ro_tooth)
             continue
 #########################################################
         mul_temp = result_img_ori.copy()#merge_mul_ori.copy()
@@ -316,16 +317,16 @@ def crop_teeth_byline(path, o_image, final_mul,final_mul_only_one_line, upper_te
         plt.imshow(bubble_mask_list_ordered[i],cmap='gray')
         plt.subplot(144)
         plt.imshow(bubble_ro_tooth_list_ordered[i],cmap='gray')
-        plt.savefig('crop_teeth/'+path.split('\\')[-1][:-4]+'_'+str(i)+'.png')
+        plt.savefig('crop_teeth/'+os.path.basename(path)[:-4]+'_'+str(i)+'.png')
         plt.clf()
         plt.close('all')
         # plt.show()
         if not os.path.exists('folder_teeth/'+o_image_folder):
             os.mkdir('folder_teeth/'+o_image_folder)
-        cv2.imwrite('folder_teeth/'+o_image_folder+'/'+path.split('\\')[-1][:-4]+'_'+str(i)+'.png', bubble_ro_tooth_list_ordered[i])
-        cv2.imwrite('teeth/'+path.split('\\')[-1][:-4]+'_'+str(i)+'.png', bubble_ro_tooth_list_ordered[i])
+        cv2.imwrite('folder_teeth/'+o_image_folder+'/'+os.path.basename(path)[:-4]+'_'+str(i)+'.png', bubble_ro_tooth_list_ordered[i])
+        cv2.imwrite('teeth/'+os.path.basename(path)[:-4]+'_'+str(i)+'.png', bubble_ro_tooth_list_ordered[i])
         
-        cv2.imwrite('mask/'+path.split('\\')[-1][:-4]+'_'+str(i)+'.png', bubble_mask_list_ordered[i])
+        cv2.imwrite('mask/'+os.path.basename(path)[:-4]+'_'+str(i)+'.png', bubble_mask_list_ordered[i])
     
     
     if not os.path.exists('drawCountour_mul/'+o_image_folder):
@@ -335,7 +336,7 @@ def crop_teeth_byline(path, o_image, final_mul,final_mul_only_one_line, upper_te
     plt.imshow(merge_o_image_t)
     plt.subplot(122)
     plt.imshow(merge_mul_ori)
-    plt.savefig('drawCountour_mul/'+o_image_folder+'/'+path.split('\\')[-1])
+    plt.savefig('drawCountour_mul/'+o_image_folder+'/'+os.path.basename(path))
 #     plt.show()
     plt.clf()
     plt.close('all')
@@ -343,7 +344,7 @@ def crop_teeth_byline(path, o_image, final_mul,final_mul_only_one_line, upper_te
     
     if not os.path.exists('drawContour_folder/'+o_image_folder):
         os.mkdir('drawContour_folder/'+o_image_folder)
-    cv2.imwrite('drawContour_folder/'+o_image_folder+'/'+path.split('\\')[-1], merge_o_image_t)
+    cv2.imwrite('drawContour_folder/'+o_image_folder+'/'+os.path.basename(path), merge_o_image_t)
 #     return bubble_ro_tooth_list_ordered
 
 def write_missing_json_file(missing_teeth, o_image_folder, path):
@@ -353,11 +354,11 @@ def write_missing_json_file(missing_teeth, o_image_folder, path):
     for i in range(len(missing_teeth)):
         data['shapes'].append({
             'miss': missing_teeth[i],
-            'name': path.split('\\')[-1][:-4]+'_'+str(i)+'.png'
+            'name': os.path.basename(path)[:-4]+'_'+str(i)+'.png'
         })
     if not os.path.exists('missing_json_file/'+o_image_folder):
         os.mkdir('missing_json_file/'+o_image_folder)
-    with open('missing_json_file/'+o_image_folder+'/'+path.split('\\')[-1][:-4]+'.json', 'w') as outfile:
+    with open('missing_json_file/'+o_image_folder+'/'+os.path.basename(path)[:-4]+'.json', 'w') as outfile:
         json.dump(data, outfile)
 
 def write_box_json_file(box_list_ordered, o_image_folder, path):
@@ -367,11 +368,11 @@ def write_box_json_file(box_list_ordered, o_image_folder, path):
     for i in range(len(box_list_ordered)):
         data['shapes'].append({
             'points': box_list_ordered[i],
-            'name': path.split('\\')[-1][:-4]+'_'+str(i)+'.png'
+            'name': os.path.basename(path)[:-4]+'_'+str(i)+'.png'
         })
     if not os.path.exists('box_json_file/'+o_image_folder):
         os.mkdir('box_json_file/'+o_image_folder)
-    with open('box_json_file/'+o_image_folder+'/'+path.split('\\')[-1][:-4]+'.json', 'w') as outfile:
+    with open('box_json_file/'+o_image_folder+'/'+os.path.basename(path)[:-4]+'.json', 'w') as outfile:
         json.dump(data, outfile)
 
 def find_boundary(lbl_copy, line_of_inertia_1):
@@ -1060,7 +1061,7 @@ def crop_teeth_byline_show(path, o_image, final_mul,final_mul_only_one_line, mul
     plt.imshow(mul_ori)
 #     plt.show()
 #     return box*4
-#     plt.savefig('crop_teeth/'+path.split('\\')[-1][:-4]+'.png')
+#     plt.savefig('crop_teeth/'+os.path.basename(path)[:-4]+'.png')
 #     plt.clf()
 #     plt.close('all')
     return components_list
@@ -1823,10 +1824,10 @@ for path in tqdm(img_path_list):
     plt.imshow(o_image,cmap = 'gray')
     if not os.path.exists('new_point/'+o_image_folder):
         os.mkdir('new_point/'+o_image_folder)
-    plt.savefig('new_point/'+path.split('\\')[-1][:-4]+'.png')
+    plt.savefig('new_point/'+os.path.basename(path)[:-4]+'.png')
 #     plt.clf()
 #     plt.close('all')
-    # plt.show()
+    plt.show()
     
     
 
