@@ -3,4 +3,4 @@
 *.zip
 *cache*
 *.json
-*.ipynbcheckpoints*
+*.ipynb_checkpoints*
