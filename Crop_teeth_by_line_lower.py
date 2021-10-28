@@ -757,6 +757,7 @@ def extend_to_border(p1, p2, shape):
     x1, y1 = p1
     x2, y2 = p2
     boardx, boardy, _ = shape
+    boardy = max(boardx, boardy)
     slope =  (y1 - y2) / (x1 - x2)
     assert type(slope) == float
     # x/y

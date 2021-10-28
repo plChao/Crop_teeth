@@ -11,7 +11,8 @@ import json
 import math
 from scipy.spatial.distance import euclidean
 from Cropping_teeth_function import *
-
+from datetime import datetime
+start_time = datetime.now()
 
 ###
 # img_path = 'D:/Lab/PBL/tooth_detection/unet/test/seg_image/*.PNG'
@@ -751,6 +752,18 @@ def find_y_gap(result_img):
             wid_tmp = result_img.shape[0]
         last_flag = flag
     return wid, bid
+def extend_to_border(p1, p2, shape):
+    # 2021/10/28 add by plchao, if work please write note
+    x1, y1 = p1
+    x2, y2 = p2
+    boardx, boardy, _ = shape
+    boardy = max(boardx, boardy)
+    slope =  (y1 - y2) / (x1 - x2)
+    assert type(slope) == float
+    # x/y
+    new_start_x, new_start_y = (boardy - y1) / slope + x1, boardy
+    new_end_x, new_end_y = (0 - y1)/slope + x1, 0
+    return (round(new_end_x), new_end_y), (round(new_start_x), new_start_y)
 
 def choose_line_draw(tmp, result_img, non_background_component, init_angle):
     moving_range = 10
@@ -802,6 +815,7 @@ def choose_line_draw(tmp, result_img, non_background_component, init_angle):
             continue
             
         cv2.circle(m_img, ref_point, 1, (255,0,0), 1)
+        extend_e, extend_s = extend_to_border(extend_e, extend_s, m_img.shape)
         cv2.line(m_img, extend_e, extend_s, (255,0,0), 1)
         line_list.append((tuple(np.array(extend_e)*4), tuple(np.array(extend_s)*4)))
 #########################################################################################
@@ -1831,4 +1845,5 @@ for path in tqdm(img_path_list):
     
 #     break
 
-
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
