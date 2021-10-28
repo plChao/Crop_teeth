@@ -16,7 +16,7 @@ start_time = datetime.now()
 
 ###
 # img_path = 'D:/Lab/PBL/tooth_detection/unet/test/seg_image/*.PNG'
-img_path = '../test/seg_image/new2_lower/*.PNG'
+img_path = '../test/seg_image/new2_upper/*.PNG'
 o_image_folder_path = 'D:/Lab/PBL/Data_clahe/*/*/'
 img_path_list = glob.glob(img_path)
 assert len(img_path_list) > 0
@@ -1844,7 +1844,7 @@ for path in tqdm(img_path_list):
     plt.savefig('new_point/'+os.path.basename(path)[:-4]+'.png')
 #     plt.clf()
 #     plt.close('all')
-    plt.show()
+    # plt.show()
     
     
 #     break
