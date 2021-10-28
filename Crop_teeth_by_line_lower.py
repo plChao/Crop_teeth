@@ -15,15 +15,17 @@ from datetime import datetime
 start_time = datetime.now()
 ###
 # img_path = 'D:/Lab/PBL/tooth_detection/unet/test/seg_image/*.PNG'
-img_path = '../test/seg_image/new2_lower/*.PNG'
-o_image_folder_path = 'D:/Lab/PBL/Data_clahe/*/*/'
-# o_image_folder_path = '../../data/root_and_image_data/1_o_image/'
+img_path = './choose_crop_img/lower/*.PNG'
+# o_image_folder_path = '../root_and_image_data/1_o_image/'
+o_image_folder_path = '../data/root_and_image_data/1_o_image/'
 img_path_list = glob.glob(img_path)
 assert len(img_path_list) > 0
 
 
 ###
 ###############################cell
+def new_round(x):
+    return int(round(x))
 def get_tooth_degree(points):
     midline = np.array(points)
     midline , midline_direction = recognize_line(midline)
@@ -175,7 +177,7 @@ def crop_teeth_byline(path, o_image, final_mul,final_mul_only_one_line, upper_te
         o_image_t = cv2.cvtColor(o_image, cv2.COLOR_GRAY2BGR)
         t_ori = o_image_t.copy()
         
-        o_image_t = cv2.resize(o_image_t,(round(o_image_t.shape[1]*0.25),round(o_image_t.shape[0]*0.25)))
+        o_image_t = cv2.resize(o_image_t,(new_round(o_image_t.shape[1]*0.25),new_round(o_image_t.shape[0]*0.25)))
         lbl = components_list[i].copy().astype('uint8')
         lbl_copy = lbl.copy()
         
@@ -219,7 +221,7 @@ def crop_teeth_byline(path, o_image, final_mul,final_mul_only_one_line, upper_te
         cv2.drawContours(merge_o_image_t, [box*4], 0, color_list[i%4], 5)
         cv2.drawContours(merge_mul_ori, [box*4], 0, color_list[i%4], 5)
 
-#         o_image_t = cv2.resize(o_image,(round(o_image.shape[1]*0.25),round(o_image.shape[0]*0.25)))
+#         o_image_t = cv2.resize(o_image,(new_round(o_image.shape[1]*0.25),new_round(o_image.shape[0]*0.25)))
         o_image_t = o_image.copy()
     
 #         mul_temp = result_img_ori,copy()#merge_mul_ori.copy()
@@ -450,7 +452,7 @@ def rotate_line(point, origin, degrees):
     qx = offset_x + cos_rad * adjusted_x + sin_rad * adjusted_y
     qy = offset_y + -sin_rad * adjusted_x + cos_rad * adjusted_y
 #     print(qx,qy)
-    return round(qx), round(qy)
+    return new_round(qx), new_round(qy)
 
 def colorful_unique(x):
     dt = np.dtype([('a', x.dtype), ('b', x.dtype), ('c', x.dtype)])
@@ -478,7 +480,7 @@ def extend_line(s,e,img):
         else:
             scale = abs(img.shape[1]/vec[1])
     
-    scale = round(scale)+1
+    scale = new_round(scale)+1
     e = e + scale*vec
     s = s - scale*vec
 #     print(e)
@@ -486,9 +488,9 @@ def extend_line(s,e,img):
 def restrict_extend_line(s, e, img, w, b):
     s = np.array(s)
     e = np.array(e)
-    x = round(s[0]-((s[0]-e[0])/(s[1]-e[1]))*(s[1]-w))
+    x = new_round(s[0]-((s[0]-e[0])/(s[1]-e[1]))*(s[1]-w))
     s = np.array((x,w))
-    x = round(e[0]-((s[0]-e[0])/(s[1]-e[1]))*(e[1]-b))
+    x = new_round(e[0]-((s[0]-e[0])/(s[1]-e[1]))*(e[1]-b))
     e = np.array((x,b))
     return tuple(s), tuple(e)
     
@@ -608,13 +610,13 @@ def point_center(component):
         if len(key_list)==1:
             img_gray = lbl.copy()
             component = np.where(img_gray == pixel, 255, 0)
-            center = (round(np.nonzero(component)[1].mean()),round(np.nonzero(component)[0].mean()))
+            center = (new_round(np.nonzero(component)[1].mean()),new_round(np.nonzero(component)[0].mean()))
             point_list_red.append(center)
         elif index != 0 :
             img_gray = lbl.copy()
             component = np.where(img_gray == pixel, 255, 0)
             unique, counts = np.unique(component, return_counts=True)
-            center = (round(np.nonzero(component)[1].mean()),round(np.nonzero(component)[0].mean()))
+            center = (new_round(np.nonzero(component)[1].mean()),new_round(np.nonzero(component)[0].mean()))
             point_list_red.append(center)
     return point_list_red
 
@@ -634,8 +636,8 @@ def cal_ref_point(i,img_shape,point_component):
 def check_line_color(back_ref_point,teeth_ref_point,result_img_gray_ori):
     check = [105,150,179,0]
     for i in range(5):
-        x = round(back_ref_point[0]+(teeth_ref_point[0]-back_ref_point[0])*0.2*i)
-        y = round(back_ref_point[1]+(teeth_ref_point[1]-back_ref_point[1])*0.2*i)
+        x = new_round(back_ref_point[0]+(teeth_ref_point[0]-back_ref_point[0])*0.2*i)
+        y = new_round(back_ref_point[1]+(teeth_ref_point[1]-back_ref_point[1])*0.2*i)
         if result_img_gray_ori[y,x] not in check:
             print(result_img_gray_ori[y,x])
             return False
@@ -767,7 +769,7 @@ def extend_to_border(p1, p2, shape):
     # x/y
     new_start_x, new_start_y = (boardy - y1) / slope + x1, boardy
     new_end_x, new_end_y = (0 - y1)/slope + x1, 0
-    return (round(new_end_x), new_end_y), (round(new_start_x), new_start_y)
+    return (new_round(new_end_x), new_end_y), (new_round(new_start_x), new_start_y)
 
 def choose_line_draw(tmp, result_img, non_background_component, init_angle):
     moving_range = 10
@@ -985,7 +987,7 @@ def crop_teeth_byline_show(path, o_image, final_mul,final_mul_only_one_line, mul
     t_ori = o_image_t.copy()
     t_ori_mim = o_image_t.copy()
     t_ori_merge = o_image_t.copy()
-    o_image_t = cv2.resize(o_image_t,(round(o_image_t.shape[1]*0.25),round(o_image_t.shape[0]*0.25)))
+    o_image_t = cv2.resize(o_image_t,(new_round(o_image_t.shape[1]*0.25),new_round(o_image_t.shape[0]*0.25)))
     color_list = [(255,0,0),(0,255,0),(255,0,255),(0,255,128)]
     for i in range(len(components_list)):
 #         plt.imshow(components_list[i])
@@ -1234,7 +1236,7 @@ def large_image_corner_detection(components_list):
     tmp = []
     for num in range(len(components_list)):
         aaa = components_list[num].copy().astype('uint8')
-        aaa = cv2.resize(aaa,(round(aaa.shape[1]*0.5),round(aaa.shape[0]*0.5)))
+        aaa = cv2.resize(aaa,(new_round(aaa.shape[1]*0.5),new_round(aaa.shape[0]*0.5)))
         
         if len(np.nonzero(components_list[num])[0]) < 1000:
             continue
@@ -1475,10 +1477,10 @@ def extend_line_pol(base_cutline, s,e):
     a = (dx * dx - dy * dy) / (dx * dx + dy*dy)
     b = 2 * dx * dy / (dx*dx + dy*dy)
 
-    x1 = round(a * (s[0] - point1[0]) + b*(s[1] - point1[1]) + point1[0])
-    y1 = round(b * (s[0] - point1[0]) - a*(s[1] - point1[1]) + point1[1])
-    x2 = round(a * (e[0] - point1[0]) + b*(e[1] - point1[1]) + point1[0])
-    y2 = round(b * (e[0] - point1[0]) - a*(e[1] - point1[1]) + point1[1])
+    x1 = new_round(a * (s[0] - point1[0]) + b*(s[1] - point1[1]) + point1[0])
+    y1 = new_round(b * (s[0] - point1[0]) - a*(s[1] - point1[1]) + point1[1])
+    x2 = new_round(a * (e[0] - point1[0]) + b*(e[1] - point1[1]) + point1[0])
+    y2 = new_round(b * (e[0] - point1[0]) - a*(e[1] - point1[1]) + point1[1])
 
 #     test = group0_lbl.copy()
 #     cv2.line(test, (x1,y1), (x2,y2), (255, 0, 0), 5)
@@ -1793,7 +1795,7 @@ for path in tqdm(img_path_list):
     upper_teeth = False#Is_upper_teeth(combined_masks)
 
     result_img_ori = result_img.copy()
-    result_img = cv2.resize(result_img,(round(result_img.shape[1]*0.25),round(result_img.shape[0]*0.25)), interpolation = cv2.INTER_NEAREST)
+    result_img = cv2.resize(result_img,(new_round(result_img.shape[1]*0.25),new_round(result_img.shape[0]*0.25)), interpolation = cv2.INTER_NEAREST)
      
     o_image = cv2.imread(o_image_path[0],0)
     mul_ori = img.copy()
@@ -1805,10 +1807,10 @@ for path in tqdm(img_path_list):
 #################### find out lines and crop teeth
 
     non_background_component = np.where(background_component>128,0,255)
-    non_background_component = cv2.resize(non_background_component,(round(non_background_component.shape[1]*0.25),round(non_background_component.shape[0]*0.25)), interpolation = cv2.INTER_NEAREST).astype('uint8')
+    non_background_component = cv2.resize(non_background_component,(new_round(non_background_component.shape[1]*0.25),new_round(non_background_component.shape[0]*0.25)), interpolation = cv2.INTER_NEAREST).astype('uint8')
    
 
-    point = [(round(point[0]/4),round(point[1]/4)) for point in select_point]
+    point = [(new_round(point[0]/4),new_round(point[1]/4)) for point in select_point]
     m_img, line_list = choose_line_draw(point, result_img, non_background_component, init_angle)
 
     ori_teeth_mask = result_img_ori.copy()
