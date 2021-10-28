@@ -752,6 +752,17 @@ def find_y_gap(result_img):
             wid_tmp = result_img.shape[0]
         last_flag = flag
     return wid, bid
+def extend_to_border(p1, p2, shape):
+    # 2021/10/28 add by plchao, if work please write note
+    x1, y1 = p1
+    x2, y2 = p2
+    boardx, boardy, _ = shape
+    slope =  (y1 - y2) / (x1 - x2)
+    assert type(slope) == float
+    # x/y
+    new_start_x, new_start_y = (boardy - y1) / slope + x1, boardy
+    new_end_x, new_end_y = (0 - y1)/slope + x1, 0
+    return (round(new_end_x), new_end_y), (round(new_start_x), new_start_y)
 
 def choose_line_draw(tmp, result_img, non_background_component, init_angle):
     moving_range = 10
@@ -792,7 +803,7 @@ def choose_line_draw(tmp, result_img, non_background_component, init_angle):
         other_pixel_list = other_pixel_list[moving_range:-moving_range]
         blue_black_color_list = blue_black_color_list[moving_range:-moving_range]
         ratio_list = ratio_list[moving_range:-moving_range]      
-        extend_e, extend_s = find_pixel_in_line(img, non_background_component, origin, ref_point, x_axis[np.argmin(moving_average_ratio_list)], wid, bid,draw=True)
+        extend_e, extend_s = find_pixel_in_line(img, non_background_component, origin, ref_point, x_axis[np.argmin(moving_average_ratio_list)], wid, bid, draw=True)
 #         extend_e, extend_s = find_pixel_in_line(img, non_background_component, origin, ref_point, -init_angle, wid, bid,draw=True)
 
         u, idx, inv = pixel_color_in_line(img, extend_e, extend_s, angle = 0)
@@ -803,13 +814,14 @@ def choose_line_draw(tmp, result_img, non_background_component, init_angle):
             continue
             
         cv2.circle(m_img, ref_point, 1, (255,0,0), 1)
+        extend_e, extend_s = extend_to_border(extend_e, extend_s, m_img.shape)
         cv2.line(m_img, extend_e, extend_s, (255,0,0), 1)
         line_list.append((tuple(np.array(extend_e)*4), tuple(np.array(extend_s)*4)))
 #########################################################################################
         
-#     plt.figure(figsize=(8,4))
-#     plt.imshow(m_img)
-#     plt.show()
+    # plt.figure(figsize=(8,4))
+    # plt.imshow(m_img)
+    # plt.show()
     return m_img, line_list
 
 def find_minrec(img, img_box):
