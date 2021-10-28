@@ -16,8 +16,8 @@ from Cropping_teeth_function import *
 ###
 # img_path = 'D:/Lab/PBL/tooth_detection/unet/test/seg_image/*.PNG'
 img_path = './choose_crop_img/lower/*.PNG'
-o_image_folder_path = '../root_and_image_data/1_o_image/'
-# o_image_folder_path = '../../data/root_and_image_data/1_o_image/'
+# o_image_folder_path = '../root_and_image_data/1_o_image/'
+o_image_folder_path = '../../data/root_and_image_data/1_o_image/'
 img_path_list = glob.glob(img_path)
 assert len(img_path_list) > 0
 
