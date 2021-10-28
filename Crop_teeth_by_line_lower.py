@@ -15,8 +15,8 @@ from datetime import datetime
 start_time = datetime.now()
 ###
 # img_path = 'D:/Lab/PBL/tooth_detection/unet/test/seg_image/*.PNG'
-img_path = './choose_crop_img/lower/*.PNG'
-o_image_folder_path = '../root_and_image_data/1_o_image/'
+img_path = '../test/seg_image/new2_lower/*.PNG'
+o_image_folder_path = 'D:/Lab/PBL/Data_clahe/*/*/'
 # o_image_folder_path = '../../data/root_and_image_data/1_o_image/'
 img_path_list = glob.glob(img_path)
 assert len(img_path_list) > 0
@@ -317,6 +317,8 @@ def crop_teeth_byline(path, o_image, final_mul,final_mul_only_one_line, upper_te
         plt.imshow(bubble_mask_list_ordered[i],cmap='gray')
         plt.subplot(144)
         plt.imshow(bubble_ro_tooth_list_ordered[i],cmap='gray')
+        if not os.path.exists('crop_teeth/'):
+            os.mkdir('crop_teeth/')
         plt.savefig('crop_teeth/'+os.path.basename(path)[:-4]+'_'+str(i)+'.png')
         plt.clf()
         plt.close('all')
@@ -758,6 +760,8 @@ def extend_to_border(p1, p2, shape):
     x2, y2 = p2
     boardx, boardy, _ = shape
     boardy = max(boardx, boardy)
+    if x1 - x2 == 0:
+        return p1, p2
     slope =  (y1 - y2) / (x1 - x2)
     assert type(slope) == float
     # x/y
@@ -1840,7 +1844,7 @@ for path in tqdm(img_path_list):
     plt.savefig('new_point/'+os.path.basename(path)[:-4]+'.png')
 #     plt.clf()
 #     plt.close('all')
-    plt.show()
+    # plt.show()
     
 end_time = datetime.now()
 print('Duration: {}'.format(end_time - start_time))
