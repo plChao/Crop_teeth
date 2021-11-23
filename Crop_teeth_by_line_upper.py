@@ -20,11 +20,14 @@ start_time = datetime.now()
 
 ###
 # img_path = 'D:/Lab/PBL/tooth_detection/unet/test/seg_image/*.PNG'
-img_path = './choose_crop_img/upper/*.PNG'
+if len(sys.argv) < 2:
+    print('Usage: python upper.py path/to/upper')
+    exit(0)
+img_path = sys.argv[1]+'/*.PNG'
 # o_image_folder_path = '../root_and_image_data/1_o_image/'
 o_image_folder_path = '../data/1_o_image/'
 img_path_list = glob.glob(img_path)
-assert len(img_path_list) > 0
+assert len(img_path_list) > 0, 'no PNG in upper path'
 
 
 ###
