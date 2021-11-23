@@ -17,7 +17,7 @@ start_time = datetime.now()
 # img_path = 'D:/Lab/PBL/tooth_detection/unet/test/seg_image/*.PNG'
 img_path = './choose_crop_img/lower/*.PNG'
 # o_image_folder_path = '../root_and_image_data/1_o_image/'
-o_image_folder_path = '../data/root_and_image_data/1_o_image/'
+o_image_folder_path = '../data/1_o_image/'
 img_path_list = glob.glob(img_path)
 assert len(img_path_list) > 0
 
@@ -328,6 +328,10 @@ def crop_teeth_byline(path, o_image, final_mul,final_mul_only_one_line, upper_te
         if not os.path.exists('folder_teeth/'+o_image_folder):
             os.mkdir('folder_teeth/'+o_image_folder)
         cv2.imwrite('folder_teeth/'+o_image_folder+'/'+os.path.basename(path)[:-4]+'_'+str(i)+'.png', bubble_ro_tooth_list_ordered[i])
+        if not os.path.exists('teeth/'):
+            os.mkdir('teeth/')
+        if not os.path.exists('mask/'):
+            os.mkdir('mask/')    
         cv2.imwrite('teeth/'+os.path.basename(path)[:-4]+'_'+str(i)+'.png', bubble_ro_tooth_list_ordered[i])
         
         cv2.imwrite('mask/'+os.path.basename(path)[:-4]+'_'+str(i)+'.png', bubble_mask_list_ordered[i])
