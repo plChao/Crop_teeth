@@ -12,6 +12,10 @@ import math
 from scipy.spatial.distance import euclidean
 from Cropping_teeth_function import *
 from datetime import datetime
+import sys
+sys.setrecursionlimit(2000)
+print('set recursion limit to', sys.getrecursionlimit())
+
 start_time = datetime.now()
 ###
 # img_path = 'D:/Lab/PBL/tooth_detection/unet/test/seg_image/*.PNG'

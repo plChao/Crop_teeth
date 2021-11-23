@@ -12,6 +12,10 @@ import math
 from scipy.spatial.distance import euclidean
 from Cropping_teeth_function import *
 from datetime import datetime
+import sys
+sys.setrecursionlimit(2000)
+print('set recursion limit to', sys.getrecursionlimit())
+
 start_time = datetime.now()
 
 ###
@@ -233,9 +237,10 @@ def crop_teeth_byline(path, o_image, final_mul,final_mul_only_one_line, upper_te
 #             mul_ro_tooth, auto_crop_mul = crop_image(mul_temp, box*4)
             
             overlap_ro_tooth, overlap_auto_crop = crop_image(o_image_t, box_findoverlap*4)
-        except:
+        except Exception as e: 
+            print(e)
             print(os.path.basename(path)[:-4])
-            print('box =',box*4)
+            # print('box =',box*4)
             continue
         
         if max(ro_tooth.shape)/min(ro_tooth.shape)>5:
