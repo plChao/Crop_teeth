@@ -13,7 +13,7 @@ from scipy.spatial.distance import euclidean
 from Cropping_teeth_function import *
 from datetime import datetime
 import sys
-sys.setrecursionlimit(2000)
+sys.setrecursionlimit(3000)
 print('set recursion limit to', sys.getrecursionlimit())
 
 start_time = datetime.now()
@@ -832,7 +832,7 @@ def choose_line_draw(tmp, result_img, non_background_component, init_angle):
             continue
             
         cv2.circle(m_img, ref_point, 1, (255,0,0), 1)
-        extend_e, extend_s = extend_to_border(extend_e, extend_s, m_img.shape)
+        # extend_e, extend_s = extend_to_border(extend_e, extend_s, m_img.shape)
         cv2.line(m_img, extend_e, extend_s, (255,0,0), 1)
         line_list.append((tuple(np.array(extend_e)*4), tuple(np.array(extend_s)*4)))
 #########################################################################################
