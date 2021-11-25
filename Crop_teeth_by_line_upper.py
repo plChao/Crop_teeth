@@ -1,4 +1,4 @@
-###
+### extend version
 import os 
 import cv2
 import shutil
@@ -13,7 +13,7 @@ from scipy.spatial.distance import euclidean
 from Cropping_teeth_function import *
 from datetime import datetime
 import sys
-sys.setrecursionlimit(2000)
+sys.setrecursionlimit(3000)
 print('set recursion limit to', sys.getrecursionlimit())
 
 start_time = datetime.now()
