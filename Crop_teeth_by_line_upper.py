@@ -390,7 +390,7 @@ def write_box_json_file(box_list_ordered, o_image_folder, path):
     if not os.path.exists('box_json_file/'+o_image_folder):
         os.mkdir('box_json_file/'+o_image_folder)
     with open('box_json_file/'+o_image_folder+'/'+os.path.basename(path)[:-4]+'.json', 'w') as outfile:
-        json.dump(data, outfile)
+        json.dump(data, outfile, indent=4, sort_keys=True)
 
 def find_boundary(lbl_copy, line_of_inertia_1):
     
